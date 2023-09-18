@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
+require('dotenv').config(); // import .env variables
 //const routes = require('./routes');   // original
 
 // Import Apollo Server
