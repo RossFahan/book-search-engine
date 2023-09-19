@@ -1,56 +1,68 @@
-const { User, Thought } = require('../models');
-const { signToken, AuthenticationError } = require('./utils/auth');  
+const { User } = require('../models');
+const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
-    Query: {
-        thoughts: async () => {
-          return Thought.find().sort({ createdAt: -1 }); //sort descending
-        },
-        thought: async (parent, { thoughtId }) => {
-          return Thought.findById(thoughtId);
-        },
-        // authentication to get the logged-in user
-        me: async (parent, args, context) => {
-          if (context.user) {
-            return User.findOne({ _id: context.user._id });
-          }
-          throw new Error('You are not authenticated!');
-        }
-      },
-
-  Mutation: {
-    addThought: async (parent, args, context) => {
+  Query: {
+    me: async (parent, args, context) => {
       if (context.user) {
-        const thought = new Thought({ ...args, username: context.user.username });
-        await thought.save();
-        return thought;
+        return User.findById(context.user._id);
       }
-      throw new AuthenticationError('You need to be logged in to add a thought.'); 
+      throw AuthenticationError;
     },
-    addUser: async (parent, args) => {
-      const user = new User(args);
-      await user.save();
-
-      const token = signToken(user);  // Generating token
-      return { token, user };
+    user: async (parent, { username }) => {
+      return User.findOne({ username });
     },
-    login: async (parent, { email, password }) => {
-      const user = await User.findOne({ email });
-
+  },
+  Mutation: {
+    login: async (parent, { username, email, password }) => {
+      const user = await User.findOne({ $or: [{ username }, { email }] });
       if (!user) {
-        throw new AuthenticationError('No user found with this email address.');  
+        throw AuthenticationError;
       }
 
       const correctPw = await user.isCorrectPassword(password);
-
       if (!correctPw) {
-        throw new AuthenticationError('Incorrect password.'); 
+        throw AuthenticationError;
       }
 
-      const token = signToken(user);  // Generating token
+      const token = signToken(user);
       return { token, user };
-    }
-  }
+    },
+    addUser: async (parent, { username, email, password }) => {
+      const user = await User.create({ username, email, password });
+      if (!user) {
+        throw new Error('Something went wrong!');
+      }
+      const token = signToken(user);
+      return { token, user };
+    },
+    saveBook: async (parent, { bookData }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          context.user._id,
+          { $addToSet: { savedBooks: bookData } },
+          { new: true, runValidators: true }
+        );
+
+        return updatedUser;
+      }
+
+      throw AuthenticationError;
+    },
+    removeBook: async (parent, { bookId }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findByIdAndUpdate(
+          context.user._id,
+          { $pull: { savedBooks: { bookId } } },
+          { new: true }
+        );
+
+        return updatedUser;
+      }
+
+      throw AuthenticationError;
+    },
+  },
 };
 
 module.exports = resolvers;
