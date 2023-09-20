@@ -13,7 +13,8 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <SearchBooks /> },
-      { path: 'saved', element: <SavedBooks /> }
+      { path: 'saved', element: <SavedBooks /> },
+      { path: '*', element: <ErrorPage /> } // Catch-all route
     ]
   }
 ]);
