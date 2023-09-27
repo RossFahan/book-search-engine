@@ -66,7 +66,7 @@ const SearchBooks = () => {
     }
 
     try {
-      const { data } = await saveBookToDatabase({ variables: { input: bookToSave } });
+      const { data } = await saveBookToDatabase({ variables: { bookData: bookToSave } });
       if (data.saveBook) {
         setSavedBookIds([...savedBookIds, bookToSave.bookId]);
       }
