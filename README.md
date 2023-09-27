@@ -18,23 +18,25 @@ The Book Search Engine is a refactored application that originally used a RESTfu
 
 ## Deployed Site
 
-[Deployed Site Link](#)
+[Deployed Site Link](https://obscure-earth-03681-040f03eecab5.herokuapp.com/)
 
-![Landing Page](./assets/landingpage.png)
+![Landing Page](./assets/demo.png)
 
 ## How to Use
 
-Simply visit the [deployed site](#) to search for books and save them to your account.
+Simply visit the [deployed site](https://obscure-earth-03681-040f03eecab5.herokuapp.com/) to search for books and save them to your account.
 
 ## Author Info
+
 ### Links
 
-* [LinkedIn](#)
-* [Github](#)
+* [LinkedIn](https://www.linkedin.com/in/rossfahan)
+* [Github](https://github.com/RossFahan)
 
 ## Credits
 
 * [W3schools](https://www.w3schools.com/)
+* [Heroku Documentation](https://devcenter.heroku.com/)
 * [Mozilla Developer Network (MDN)](https://developer.mozilla.org/)
 * [StackOverflow](https://stackoverflow.com/)
 
